@@ -210,6 +210,38 @@
         justify-content: flex-end;
       }
     }
+    .chat-box {
+  position: fixed;
+  bottom: 120px;
+  right: 20px;
+  width: 250px;
+  background: white;
+  border-radius: 25px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(255,105,180,0.2);
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.chat-box h3 {
+  color: #ff4f9a;
+  margin-bottom: 10px;
+}
+
+.chat-box p {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.chat-box button {
+  border: none;
+  background: #ff69b4;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 15px;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -236,7 +268,21 @@
     </div>
   </div>
 
-  <div class="character">🐰</div>
+ <div class="character" onclick="toggleChat()">
+  🐰
+</div>
+
+<div class="chat-box" id="chatBox">
+  <h3>🎀 Bunny Helper</h3>
+
+  <p id="bunnyMessage">
+    You’re doing amazing today bestie 💗
+  </p>
+
+  <button onclick="newMessage()">
+    ✨ New Message
+  </button>
+</div>
 
   <script>
     const taskList = document.getElementById('taskList');
@@ -347,6 +393,32 @@ document.body.addEventListener('click', () => {
 
 audio.play();
     window.onload = loadTasks;
+          function toggleChat() {
+  const chatBox = document.getElementById('chatBox');
+
+  if(chatBox.style.display === 'block') {
+    chatBox.style.display = 'none';
+  } else {
+    chatBox.style.display = 'block';
+  }
+}
+
+function newMessage() {
+
+  const messages = [
+    'Drink water bestie 💧',
+    'You can finish your tasks 💗',
+    'Take a deep breath 🌸',
+    'One step at a time 🐰',
+    'Your future self will thank you ✨',
+    'Stay soft and strong 🎀'
+  ];
+
+  const randomMessage =
+    messages[Math.floor(Math.random() * messages.length)];
+
+  document.getElementById('bunnyMessage').innerText = randomMessage;
+}
   </script>
 
 </body>
