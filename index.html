@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
-<body>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +9,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
+@media(max-width:768px){
 
+.container{
+padding:20px;
+}
+
+.title{
+font-size:2.2rem;
+}
+
+.task{
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+}
+
+.action-buttons{
+width:100%;
+justify-content:flex-end;
+}
+
+.chat-box{
+width:90%;
+right:5%;
+bottom:100px;
+}
+
+}
+  
 *{
 margin:0;
 padding:0;
@@ -176,6 +202,55 @@ border-radius:15px;
 cursor:pointer;
 }
 
+.chat-messages{
+height:200px;
+overflow-y:auto;
+margin-bottom:15px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.bot-message{
+background:#ffe6f2;
+padding:10px;
+border-radius:15px;
+color:#ff4f9a;
+max-width:80%;
+}
+
+.user-message{
+background:#ff69b4;
+padding:10px;
+border-radius:15px;
+color:white;
+align-self:flex-end;
+max-width:80%;
+}
+
+.chat-input-area{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.chat-input-area input{
+flex:1;
+padding:10px;
+border:none;
+border-radius:15px;
+outline:none;
+}
+
+.chat-input-area button{
+border:none;
+padding:10px 15px;
+border-radius:15px;
+background:#ff69b4;
+color:white;
+cursor:pointer;
+}
+
 .cute-row{
 display:flex;
 justify-content:center;
@@ -239,14 +314,19 @@ Cute aesthetic planner for productive girlies ✨
 
 <h3>🎀 Bunny Helper</h3>
 
-<p id="bunnyMessage">
-You’re doing amazing today bestie 💗
-</p>
+<div id="chatMessages" class="chat-messages">
+  <div class="bot-message">
+    Hii bestie 💗
+  </div>
+</div>
 
-<button onclick="newMessage()">
-✨ New Message
-</button>
+<div class="chat-input-area">
+  <input type="text" id="userInput" placeholder="Talk to bunny...">
 
+  <button onclick="sendMessage()">
+    ➤
+  </button>
+</div>
 </div>
 
 <script>
@@ -351,24 +431,71 @@ chatBox.style.display='block';
 
 });
 
-function newMessage(){
+function sendMessage(){
 
-const messages=[
-'Drink water bestie 💧',
-'You can do this 💗',
-'Take a small break 🌸',
-'Stay focused queen ✨',
-'One task at a time 🐰',
-'You are productive today 🎀'
-];
+const input=document.getElementById('userInput');
 
-const randomMessage=
-messages[Math.floor(Math.random()*messages.length)];
+const message=input.value.trim();
 
-document.getElementById('bunnyMessage').innerText=randomMessage;
+if(message==='') return;
 
+const chatMessages=document.getElementById('chatMessages');
+
+chatMessages.innerHTML += `
+<div class="user-message">
+${message}
+</div>
+`;
+
+let reply='';
+
+const lowerMessage=message.toLowerCase();
+
+if(lowerMessage.includes('sad')){
+reply='Aww bestie 🥺 everything will be okay 💗';
 }
 
+else if(lowerMessage.includes('tired')){
+reply='Take some rest and drink water 🌸';
+}
+
+else if(lowerMessage.includes('study')){
+reply='You can do it! One step at a time 📚';
+}
+
+else if(lowerMessage.includes('hello') || lowerMessage.includes('hi')){
+reply='Hiiiii bestieee 🐰💗';
+}
+
+else{
+reply='I am always here for you 🎀';
+}
+
+setTimeout(()=>{
+
+chatMessages.innerHTML += `
+<div class="bot-message">
+${reply}
+</div>
+`;
+
+chatMessages.scrollTop=chatMessages.scrollHeight;
+
+},500);
+
+input.value='';
+
+}
+document.getElementById('userInput')
+.addEventListener('keypress', function(e){
+
+if(e.key === 'Enter'){
+sendMessage();
+}
+
+});
+
+  
 </script>
 
 </body>
