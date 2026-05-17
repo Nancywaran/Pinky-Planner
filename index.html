@@ -176,6 +176,23 @@ border-radius:15px;
 cursor:pointer;
 }
 
+.cute-row{
+display:flex;
+justify-content:center;
+gap:15px;
+margin-bottom:25px;
+flex-wrap:wrap;
+}
+
+.cute-card{
+background:white;
+padding:12px 20px;
+border-radius:20px;
+color:#ff4f9a;
+font-weight:600;
+box-shadow:0 5px 15px rgba(255,105,180,0.15);
+}
+
 @keyframes float{
 0%{transform:translateY(0px);}
 50%{transform:translateY(-10px);}
@@ -194,7 +211,13 @@ cursor:pointer;
 <p class="subtitle">
 Cute aesthetic planner for productive girlies ✨
 </p>
-
+<div class="cute-row">
+  <div class="cute-card">💗 Study</div>
+  <div class="cute-card">🌸 Self Care</div>
+  <div class="cute-card">🧸 Work</div>
+  <div class="cute-card">☕ Break Time</div>
+</div>
+  
 <div class="planner-box">
 
 <div class="input-group">
