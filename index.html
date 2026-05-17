@@ -264,6 +264,7 @@
       `;
 
       taskList.appendChild(task);
+      saveTasks();
 
       taskInput.value = '';
       timeInput.value = '';
@@ -271,12 +272,27 @@
 
     function deleteTask(button) {
       button.parentElement.parentElement.remove();
+      saveTasks();
     }
 
     function completeTask(button) {
       const task = button.parentElement.parentElement;
       task.classList.toggle('completed');
+      saveTasks();
     }
+    function saveTasks() {
+  localStorage.setItem('pinkyTasks', taskList.innerHTML);
+}
+
+function loadTasks() {
+  const savedTasks = localStorage.getItem('pinkyTasks');
+
+  if(savedTasks) {
+    taskList.innerHTML = savedTasks;
+  }
+}
+
+window.onload = loadTasks;
   </script>
 
 </body>
