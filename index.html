@@ -254,7 +254,7 @@
       task.innerHTML = `
         <div class="task-info">
           <h3>${taskInput.value}</h3>
-         <p>⏰ ${formatTime(timeInput.value)}</p>
+         <p data-time=\"${timeInput.value}\">⏰ ${formatTime(timeInput.value)}</p>
         </div>
 
         <div class="action-buttons">
@@ -306,6 +306,30 @@ window.onload = loadTasks;
   hours = hours ? hours : 12;
 
   return `${hours}:${minutes} ${ampm}`;
+}
+    setInterval(checkAlarm, 1000);
+
+function checkAlarm() {
+  const now = new Date();
+
+  let currentHours = now.getHours().toString().padStart(2, '0');
+  let currentMinutes = now.getMinutes().toString().padStart(2, '0');
+
+  let currentTime = `${currentHours}:${currentMinutes}`;
+
+  const tasks = document.querySelectorAll('.task');
+
+  tasks.forEach(task => {
+    const taskTime = task.querySelector('p').dataset.time;
+
+    if(taskTime.includes(currentTime)) {
+
+      alert('🎀 Reminder: ' + task.querySelector('h3').innerText);
+
+      const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+      audio.play();
+    }
+  });
 }
   </script>
 
