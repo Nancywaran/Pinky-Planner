@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -238,10 +239,38 @@
   <div class="character">🐰</div>
 
   <script>
+    const taskList = document.getElementById('taskList');
+
+    function formatTime(time) {
+      if (!time) return 'No Time Added';
+
+      let [hours, minutes] = time.split(':');
+
+      hours = parseInt(hours);
+
+      let ampm = hours >= 12 ? 'PM' : 'AM';
+
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+
+      return `${hours}:${minutes} ${ampm}`;
+    }
+
+    function saveTasks() {
+      localStorage.setItem('pinkyTasks', taskList.innerHTML);
+    }
+
+    function loadTasks() {
+      const savedTasks = localStorage.getItem('pinkyTasks');
+
+      if(savedTasks) {
+        taskList.innerHTML = savedTasks;
+      }
+    }
+
     function addTask() {
       const taskInput = document.getElementById('taskInput');
       const timeInput = document.getElementById('timeInput');
-      const taskList = document.getElementById('taskList');
 
       if(taskInput.value === '') {
         alert('Please enter a schedule 💗');
@@ -254,7 +283,7 @@
       task.innerHTML = `
         <div class="task-info">
           <h3>${taskInput.value}</h3>
-         <p data-time=\"${timeInput.value}\">⏰ ${formatTime(timeInput.value)}</p>
+          <p data-time="${timeInput.value}">⏰ ${formatTime(timeInput.value)}</p>
         </div>
 
         <div class="action-buttons">
@@ -264,6 +293,7 @@
       `;
 
       taskList.appendChild(task);
+
       saveTasks();
 
       taskInput.value = '';
@@ -280,57 +310,38 @@
       task.classList.toggle('completed');
       saveTasks();
     }
-    function saveTasks() {
-  localStorage.setItem('pinkyTasks', taskList.innerHTML);
-}
 
-function loadTasks() {
-  const savedTasks = localStorage.getItem('pinkyTasks');
-
-  if(savedTasks) {
-    taskList.innerHTML = savedTasks;
-  }
-}
-
-window.onload = loadTasks;
-    function formatTime(time) {
-  if (!time) return 'No Time Added';
-
-  let [hours, minutes] = time.split(':');
-
-  hours = parseInt(hours);
-
-  let ampm = hours >= 12 ? 'PM' : 'AM';
-
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-
-  return `${hours}:${minutes} ${ampm}`;
-}
     setInterval(checkAlarm, 1000);
 
-function checkAlarm() {
-  const now = new Date();
+    function checkAlarm() {
+      const now = new Date();
 
-  let currentHours = now.getHours().toString().padStart(2, '0');
-  let currentMinutes = now.getMinutes().toString().padStart(2, '0');
+      let currentHours = now.getHours().toString().padStart(2, '0');
+      let currentMinutes = now.getMinutes().toString().padStart(2, '0');
 
-  let currentTime = `${currentHours}:${currentMinutes}`;
+      let currentTime = `${currentHours}:${currentMinutes}`;
 
-  const tasks = document.querySelectorAll('.task');
+      const tasks = document.querySelectorAll('.task');
 
-  tasks.forEach(task => {
-    const taskTime = task.querySelector('p').dataset.time;
+      tasks.forEach(task => {
+        const taskTime = task.querySelector('p').dataset.time;
 
-    if(taskTime.includes(currentTime)) {
+        if(taskTime === currentTime && !task.classList.contains('rung')) {
 
-      alert('🎀 Reminder: ' + task.querySelector('h3').innerText);
+          task.classList.add('rung');
 
-      const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-09.mp3');
-      audio.play();
+          alert('🎀 Reminder: ' + task.querySelector('h3').innerText);
+
+          const audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+
+          audio.play()
+          .then(() => console.log('Alarm Played'))
+          .catch(error => console.log('Audio blocked:', error));
+        }
+      });
     }
-  });
-}
+
+    window.onload = loadTasks;
   </script>
 
 </body>
