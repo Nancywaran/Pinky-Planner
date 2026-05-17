@@ -332,15 +332,20 @@
 
           alert('🎀 Reminder: ' + task.querySelector('h3').innerText);
 
-          const audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+       const audio = new Audio();
 
-          audio.play()
-          .then(() => console.log('Alarm Played'))
-          .catch(error => console.log('Audio blocked:', error));
-        }
-      });
-    }
+audio.src = 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg';
 
+audio.loop = false;
+
+document.body.addEventListener('click', () => {
+  audio.play().then(() => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+}, { once: true });
+
+audio.play();
     window.onload = loadTasks;
   </script>
 
