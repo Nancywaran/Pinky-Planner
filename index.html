@@ -254,7 +254,7 @@
       task.innerHTML = `
         <div class="task-info">
           <h3>${taskInput.value}</h3>
-          <p>⏰ ${timeInput.value || 'No Time Added'}</p>
+         <p>⏰ ${formatTime(timeInput.value)}</p>
         </div>
 
         <div class="action-buttons">
@@ -293,6 +293,20 @@ function loadTasks() {
 }
 
 window.onload = loadTasks;
+    function formatTime(time) {
+  if (!time) return 'No Time Added';
+
+  let [hours, minutes] = time.split(':');
+
+  hours = parseInt(hours);
+
+  let ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+
+  return `${hours}:${minutes} ${ampm}`;
+}
   </script>
 
 </body>
