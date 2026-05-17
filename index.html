@@ -1,36 +1,350 @@
-audio.play();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinky Planner</title>
 
-        }
-      });
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    window.onload = loadTasks;
+<style>
 
-    document.getElementById('bunny').addEventListener('click', function() {
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Fredoka',sans-serif;
+}
 
-      const chatBox = document.getElementById('chatBox');
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#ffd6ea,#ffeef7,#ffc2df);
+display:flex;
+justify-content:center;
+align-items:center;
+padding:30px;
+}
 
-      if(chatBox.style.display === 'block') {
-        chatBox.style.display = 'none';
-      } else {
-        chatBox.style.display = 'block';
-      }
+.container{
+width:100%;
+max-width:900px;
+background:rgba(255,255,255,0.5);
+backdrop-filter:blur(15px);
+border-radius:35px;
+padding:35px;
+box-shadow:0 10px 40px rgba(255,105,180,0.2);
+}
 
-    });
+.title{
+text-align:center;
+font-size:3rem;
+color:#ff4f9a;
+margin-bottom:10px;
+}
 
-    function newMessage() {
+.subtitle{
+text-align:center;
+color:#b85d8d;
+margin-bottom:30px;
+}
 
-      const messages = [
-        'Drink water bestie 💧',
-        'You can finish your tasks 💗',
-        'Take a deep breath 🌸',
-        'One step at a time 🐰',
-        'Your future self will thank you ✨',
-        'Stay soft and strong 🎀'
-      ];
+.planner-box{
+background:rgba(255,255,255,0.7);
+padding:25px;
+border-radius:30px;
+}
 
-      const randomMessage =
-        messages[Math.floor(Math.random() * messages.length)];
+.input-group{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+margin-bottom:25px;
+}
 
-      document.getElementById('bunnyMessage').innerText = randomMessage;
-    }
+input{
+flex:1;
+padding:15px;
+border:none;
+border-radius:18px;
+outline:none;
+font-size:1rem;
+}
+
+.add-btn{
+border:none;
+padding:15px 25px;
+border-radius:18px;
+background:linear-gradient(135deg,#ff69b4,#ff4f9a);
+color:white;
+cursor:pointer;
+font-size:1rem;
+}
+
+.task-list{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.task{
+background:white;
+padding:18px;
+border-radius:22px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.task-info h3{
+color:#ff4f9a;
+margin-bottom:5px;
+}
+
+.task-info p{
+color:#777;
+}
+
+.action-buttons{
+display:flex;
+gap:10px;
+}
+
+.cute-btn{
+border:none;
+width:45px;
+height:45px;
+border-radius:50%;
+cursor:pointer;
+font-size:1.1rem;
+}
+
+.done{
+background:#d6ffd6;
+}
+
+.delete{
+background:#ffd6e8;
+}
+
+.completed{
+opacity:0.6;
+text-decoration:line-through;
+}
+
+.character{
+position:fixed;
+bottom:20px;
+right:20px;
+font-size:5rem;
+cursor:pointer;
+animation:float 2s infinite ease-in-out;
+z-index:9999;
+}
+
+.chat-box{
+position:fixed;
+bottom:120px;
+right:20px;
+width:250px;
+background:white;
+border-radius:25px;
+padding:20px;
+display:none;
+z-index:9999;
+box-shadow:0 10px 30px rgba(255,105,180,0.2);
+}
+
+.chat-box h3{
+color:#ff4f9a;
+margin-bottom:10px;
+}
+
+.chat-box p{
+margin-bottom:15px;
+color:#666;
+}
+
+.chat-box button{
+border:none;
+background:#ff69b4;
+color:white;
+padding:10px 15px;
+border-radius:15px;
+cursor:pointer;
+}
+
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0px);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 class="title">🎀 Pinky Planner 🎀</h1>
+
+<p class="subtitle">
+Cute aesthetic planner for productive girlies ✨
+</p>
+
+<div class="planner-box">
+
+<div class="input-group">
+<input type="text" id="taskInput" placeholder="Enter your schedule...">
+<input type="time" id="timeInput">
+<button class="add-btn" onclick="addTask()">+ Add</button>
+</div>
+
+<div class="task-list" id="taskList"></div>
+
+</div>
+</div>
+
+<div class="character" id="bunny">
+🐰
+</div>
+
+<div class="chat-box" id="chatBox">
+
+<h3>🎀 Bunny Helper</h3>
+
+<p id="bunnyMessage">
+You’re doing amazing today bestie 💗
+</p>
+
+<button onclick="newMessage()">
+✨ New Message
+</button>
+
+</div>
+
+<script>
+
+const taskList=document.getElementById('taskList');
+
+function formatTime(time){
+
+if(!time) return 'No Time Added';
+
+let [hours,minutes]=time.split(':');
+
+hours=parseInt(hours);
+
+let ampm=hours>=12?'PM':'AM';
+
+hours=hours%12;
+hours=hours?hours:12;
+
+return `${hours}:${minutes} ${ampm}`;
+
+}
+
+function saveTasks(){
+localStorage.setItem('pinkyTasks',taskList.innerHTML);
+}
+
+function loadTasks(){
+
+const savedTasks=localStorage.getItem('pinkyTasks');
+
+if(savedTasks){
+taskList.innerHTML=savedTasks;
+}
+
+}
+
+window.onload=loadTasks;
+
+function addTask(){
+
+const taskInput=document.getElementById('taskInput');
+const timeInput=document.getElementById('timeInput');
+
+if(taskInput.value===''){
+alert('Please enter a schedule 💗');
+return;
+}
+
+const task=document.createElement('div');
+
+task.classList.add('task');
+
+task.innerHTML=`
+
+<div class="task-info">
+<h3>${taskInput.value}</h3>
+<p>⏰ ${formatTime(timeInput.value)}</p>
+</div>
+
+<div class="action-buttons">
+<button class="cute-btn done" onclick="completeTask(this)">✔</button>
+<button class="cute-btn delete" onclick="deleteTask(this)">🗑</button>
+</div>
+
+`;
+
+taskList.appendChild(task);
+
+saveTasks();
+
+taskInput.value='';
+timeInput.value='';
+
+}
+
+function deleteTask(button){
+
+button.parentElement.parentElement.remove();
+
+saveTasks();
+
+}
+
+function completeTask(button){
+
+button.parentElement.parentElement.classList.toggle('completed');
+
+saveTasks();
+
+}
+
+document.getElementById('bunny').addEventListener('click',function(){
+
+const chatBox=document.getElementById('chatBox');
+
+if(chatBox.style.display==='block'){
+chatBox.style.display='none';
+}else{
+chatBox.style.display='block';
+}
+
+});
+
+function newMessage(){
+
+const messages=[
+'Drink water bestie 💧',
+'You can do this 💗',
+'Take a small break 🌸',
+'Stay focused queen ✨',
+'One task at a time 🐰',
+'You are productive today 🎀'
+];
+
+const randomMessage=
+messages[Math.floor(Math.random()*messages.length)];
+
+document.getElementById('bunnyMessage').innerText=randomMessage;
+
+}
+
+</script>
+
+</body>
+</html>
